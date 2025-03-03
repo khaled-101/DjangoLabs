@@ -3,10 +3,9 @@ from django.db import models
 class School(models.Model):
     name = models.CharField(verbose_name="School", max_length=50, unique=True)
     number_of_classes = models.IntegerField(verbose_name="Number of Classes")  # Changed from CharField to IntegerField
-    area = models.FloatField(verbose_name="Area", default=0.0, editable=False)
+    area = models.DecimalField(verbose_name="Area", max_digits=10, decimal_places=2, default=0.00, editable=False)
 
     def calculate_area(self):
-        # If the instance hasn't been saved yet, return 0
         if not self.pk:
             return 0
         # Otherwise, sum up the areas of related classrooms
@@ -17,12 +16,12 @@ class School(models.Model):
 class Classroom(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE)  
     name = models.CharField(verbose_name="Classroom", max_length=50, unique=True)
-    area = models.FloatField(verbose_name="Area", default=0.0)
+    area = models.DecimalField(verbose_name="Area", max_digits=10, decimal_places=2, default=0.00)  # Ensure default is properly handled
 
     def save(self, *args, **kwargs):
-        """Save and update the school's area calculation."""
-        super().save(*args, **kwargs)
+        super().save(*args, **kwargs)  
         if self.school:
+            self.school.area = self.school.calculate_area()  
             self.school.save()
 
     def delete(self, *args, **kwargs):

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Classrooms List</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+  <h1>Classrooms List</h1>
+  <ul>
+    {% for classroom in classrooms %}
+      <li>
+        {{ classroom.name }} - Area: {{ classroom.area }} - School: {{ classroom.school.name }}
+      </li>
+    {% empty %}
+      <li>No classrooms available.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
